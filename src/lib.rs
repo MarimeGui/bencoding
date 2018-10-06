@@ -4,7 +4,7 @@ pub mod error;
 
 use error::DecodeError;
 use ez_io::ReadE;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::io::Read;
 use std::result::Result;
 
@@ -14,7 +14,7 @@ pub enum Bencoding {
     String(Vec<u8>),
     Integer(i64),
     List(Vec<Bencoding>),
-    Dictionary(HashMap<Vec<u8>, Bencoding>),
+    Dictionary(BTreeMap<Vec<u8>, Bencoding>),
 }
 
 impl Bencoding {
@@ -134,8 +134,8 @@ fn decode_list<R: Read>(reader: &mut R) -> Result<Vec<Bencoding>, DecodeError> {
     Ok(list)
 }
 
-fn decode_dict<R: Read>(reader: &mut R) -> Result<HashMap<Vec<u8>, Bencoding>, DecodeError> {
-    let mut dict = HashMap::new();
+fn decode_dict<R: Read>(reader: &mut R) -> Result<BTreeMap<Vec<u8>, Bencoding>, DecodeError> {
+    let mut dict = BTreeMap::new();
     loop {
         let key = match decode(reader)? {
             DecodeTypes::Bencoding(b) => match b {
